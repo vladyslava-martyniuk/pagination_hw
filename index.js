@@ -19,7 +19,7 @@ imageGallery.addEventListener('submit', (event) => {
 });
 
 loadMoreBtn.addEventListener('click', async (event) => {
-    event.preventDefault(); // Додано для запобігання перекиданню сторінки вгору
+    event.preventDefault(); 
     page++;
     fetchImages();
 });
