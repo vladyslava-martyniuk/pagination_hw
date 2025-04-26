@@ -5,23 +5,27 @@
 //Реалізуйте пагінацію, яка включатиме кнопку "Завантажити ще" 
 //При кліці на кнопку "Завантажити ще" виконайте відповідний запит до API Pixabay і оновіть список зображень на новій 
 // сторінці.
-const api_key = '49388392-02e817ef61ae4618fbf814ce7';;
+const api_key = '49388392-02e817ef61ae4618fbf814ce7';
 const imageGallery = document.querySelector('#image-gallery');
 const loadMoreBtn = document.querySelector('#load-more-btn');
 let page = 1;
 let query = '';
+
 imageGallery.addEventListener('submit', (event) => {
     event.preventDefault();
-    page = 1;       
+    page = 1;
     query = event.target.searchQuery.value;
     fetchImages();
 });
-loadMoreBtn.addEventListener('click', () => {   
-    page++;       
+
+loadMoreBtn.addEventListener('click', async (event) => {
+    event.preventDefault(); // Додано для запобігання перекиданню сторінки вгору
+    page++;
     fetchImages();
 });
+
 async function fetchImages() {
-    try {       
+    try {
         const response = await fetch(`https://pixabay.com/api/?key=${api_key}&q=${query}&page=${page}&per_page=40`);
         const data = await response.json();
         displayImages(data.hits);
@@ -31,11 +35,14 @@ async function fetchImages() {
             loadMoreBtn.style.display = 'none';
         }
     } catch (error) {
-        console.error('Error fetching images:', error);
+        console.error('Помилка при отриманні зображень:', error);
     }
 }
+
 function displayImages(images) {
-    imageGallery.innerHTML = '';
+    if (page === 1) {
+        imageGallery.innerHTML = ''; 
+    }
     images.forEach(image => {
         const imageElement = document.createElement('img');
         imageElement.src = image.webformatURL;
@@ -43,4 +50,7 @@ function displayImages(images) {
         imageGallery.appendChild(imageElement);
     });
 }
+
+
 fetchImages();
+
